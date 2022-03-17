@@ -1,0 +1,101 @@
+import re
+
+def register():
+  print("\n\nRegister:-")
+  user = input("Enter the User Name: ")
+  v = val_user(user)
+  if(v=='N'):
+    print("\nUser Name is not valid.\n\nPlease enter the details again.\n")
+    register()
+  else:
+    pwd  = input("Enter the password: ")
+    v = val_pass(pwd)
+    if(v=='N'):
+      print("\nPassword is not valid.\nPlease enter the details again.\n")
+      register()
+    else:
+      with open('abc.txt','a') as f:
+        f.write(user)
+        f.write('\n')
+        f.write(pwd)
+        f.write('\n')
+      print("\n\n\nRegistered Successfully!!")
+
+def login():
+  print("\n\nLogin:-")
+  user = input("\nEnter the User Name: ")
+  v = check_user(user)
+  if(v=='N'):
+    a = int(input("\nUser Name is not valid.\n\n1. Try again\n2. Register\n\n"))
+    if(a == 1):
+      login()
+    else:
+      register()
+  else:
+    pwd  = input("\nEnter the password: ")
+    v = check_pass(pwd,user)
+    if(v=='N'):
+      print("\nYou've entered a wrong Password")
+      a = int(input("\n1.Forgot Password\n2.Try again\n\n"))
+      if(a==1):
+        find_pass(user)
+      login()
+    else:
+      print("\n\n\nLogged In Successfully!!")
+
+def find_pass(u):
+  k = 0
+  with open('abc.txt','r') as f:
+    for i in f:
+      if k == 1:
+        print("\nYour password is: ",i)
+        break
+      if u in i:
+        k = 1
+
+def check_user(u):
+  k = 0
+  with open('abc.txt','r') as f:
+    for i in f:
+      if u == i.strip():
+        k = 1
+        break
+  if (k==1):
+    return 'Y'
+  else:
+    return 'N'
+
+def check_pass(p,u):
+  k = 0
+  with open('abc.txt','r') as f:
+    for i in f:
+      if k == 1:
+        if i.strip() == p:
+          return 'Y'
+        else:
+          return 'N'
+        break
+      if u in i:
+        k = 1
+
+def val_user(u):
+  regex = '^[a-z]+[a-z0-9.]+[\._]?[a-z0-9]+[@]+[a-z0-9]+[.]+[a-z0-9]{2,3}$'
+  if(re.search(regex,u)):
+    return "Y"
+  else:
+    return "N"
+
+def val_pass(p):
+  reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{5,16}$"
+  if(re.search(reg,p)):
+    return "Y"
+  else:
+    return "N"
+
+
+print("Welcome!\n\n")
+a = int(input("Choose '1' to Login, '2' to Register\n\n"))
+if(a==1):
+  login()
+else:
+  register()
